@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # docdist3.py - improved dot product to exploit sorted order and achieve
-#               linear instead of quadratic time
+# linear instead of quadratic time
 #
 # Original version by Ronald L. Rivest on February 14, 2007
 # Revision by Erik D. Demaine on September 12, 2011
@@ -30,8 +30,8 @@
 #    norm(x) = sqrt(inner_product(x,x))
 
 import math
-    # math.acos(x) is the arccosine of x.
-    # math.sqrt(x) is the square root of x.
+# math.acos(x) is the arccosine of x.
+# math.sqrt(x) is the square root of x.
 
 import sys
 
@@ -47,8 +47,9 @@ def read_file(filename):
         f = open(filename, 'r')
         return f.readlines()
     except IOError:
-        print "Error opening or reading input file: ",filename
+        print "Error opening or reading input file: ", filename
         sys.exit()
+
 
 #################################################
 # Operation 2: split the text lines into words ##
@@ -66,6 +67,7 @@ def get_words_from_line_list(L):
         word_list.extend(words_in_line)
     return word_list
 
+
 def get_words_from_string(line):
     """
     Return a list of the words in the given input string,
@@ -75,21 +77,22 @@ def get_words_from_string(line):
     Output: a list of strings 
               (each string is a sequence of alphanumeric characters)
     """
-    word_list = []          # accumulates words in line
-    character_list = []     # accumulates characters in word
+    word_list = []  # accumulates words in line
+    character_list = []  # accumulates characters in word
     for c in line:
         if c.isalnum():
             character_list.append(c)
-        elif len(character_list)>0:
+        elif len(character_list) > 0:
             word = "".join(character_list)
             word = word.lower()
             word_list.append(word)
             character_list = []
-    if len(character_list)>0:
+    if len(character_list) > 0:
         word = "".join(character_list)
         word = word.lower()
         word_list.append(word)
     return word_list
+
 
 ##############################################
 # Operation 3: count frequency of each word ##
@@ -105,8 +108,9 @@ def count_frequency(word_list):
                 entry[1] = entry[1] + 1
                 break
         else:
-            L.append([new_word,1])
+            L.append([new_word, 1])
     return L
+
 
 ###############################################################
 # Operation 4: sort words into alphabetic order             ###
@@ -123,13 +127,14 @@ def insertion_sort(A):
     for j in range(len(A)):
         key = A[j]
         # insert A[j] into sorted sequence A[0..j-1]
-        i = j-1
-        while i>-1 and A[i]>key:
-            A[i+1] = A[i]
-            i = i-1
-        A[i+1] = key
+        i = j - 1
+        while i > -1 and A[i] > key:
+            A[i + 1] = A[i]
+            i = i - 1
+        A[i + 1] = key
     return A
-    
+
+
 #############################################
 ## compute word frequencies for input file ##
 #############################################
@@ -144,14 +149,15 @@ def word_frequencies_for_file(filename):
     freq_mapping = count_frequency(word_list)
     insertion_sort(freq_mapping)
 
-    print "File",filename,":",
-    print len(line_list),"lines,",
-    print len(word_list),"words,",
-    print len(freq_mapping),"distinct words"
+    print "File", filename, ":",
+    print len(line_list), "lines,",
+    print len(word_list), "words,",
+    print len(freq_mapping), "distinct words"
 
     return freq_mapping
 
-def inner_product(L1,L2):
+
+def inner_product(L1, L2):
     """
     Inner product between two vectors, where vectors
     are represented as alphabetically sorted (word,freq) pairs.
@@ -162,7 +168,7 @@ def inner_product(L1,L2):
     sum = 0.0
     i = 0
     j = 0
-    while i<len(L1) and j<len(L2):
+    while i < len(L1) and j < len(L2):
         # L1[i:] and L2[j:] yet to be processed
         if L1[i][0] == L2[j][0]:
             # both vectors have this word
@@ -177,15 +183,17 @@ def inner_product(L1,L2):
             j += 1
     return sum
 
-def vector_angle(L1,L2):
+
+def vector_angle(L1, L2):
     """
     The input is a list of (word,freq) pairs, sorted alphabetically.
 
     Return the angle between these two vectors.
     """
-    numerator = inner_product(L1,L2)
-    denominator = math.sqrt(inner_product(L1,L1)*inner_product(L2,L2))
-    return math.acos(numerator/denominator)
+    numerator = inner_product(L1, L2)
+    denominator = math.sqrt(inner_product(L1, L1) * inner_product(L2, L2))
+    return math.acos(numerator / denominator)
+
 
 def main():
     if len(sys.argv) != 3:
@@ -195,11 +203,13 @@ def main():
         filename_2 = sys.argv[2]
         sorted_word_list_1 = word_frequencies_for_file(filename_1)
         sorted_word_list_2 = word_frequencies_for_file(filename_2)
-        distance = vector_angle(sorted_word_list_1,sorted_word_list_2)
-        print "The distance between the documents is: %0.6f (radians)"%distance
+        distance = vector_angle(sorted_word_list_1, sorted_word_list_2)
+        print "The distance between the documents is: %0.6f (radians)" % distance
+
 
 if __name__ == "__main__":
     import profile
+
     profile.run("main()")
 
     
